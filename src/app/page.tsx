@@ -15,7 +15,13 @@ export default function LandingPage() {
               DECIDA
             </span>
           </div>
-          <div>
+          <div className="flex items-center gap-4">
+            <Link 
+              href="/panduan" 
+              className="text-sm font-semibold text-slate-600 hover:text-indigo-600 transition-colors px-3 py-2"
+            >
+              Buku Panduan
+            </Link>
             <Link 
               href="/login" 
               className="text-sm font-semibold text-indigo-600 hover:text-indigo-700 transition-colors px-4 py-2 rounded-full hover:bg-indigo-50"
@@ -159,9 +165,12 @@ export default function LandingPage() {
             <div className="w-6 h-6 rounded-md bg-gradient-to-br from-indigo-600 to-teal-500 flex items-center justify-center text-white font-bold text-xs">
               D
             </div>
-            <span className="font-semibold text-slate-300">DECIDA Platform &copy; 2026</span>
+            <span className="font-semibold text-slate-300">DECIDA Platform &copy; {new Date().getFullYear()}</span>
           </div>
-          <p className="text-sm">Riset Inovasi Pendidikan Tinggi</p>
+          <div className="flex gap-6 items-center">
+            <Link href="/panduan" className="text-sm hover:text-white transition-colors">Buku Panduan</Link>
+            <p className="text-sm">Riset Inovasi Pendidikan Tinggi</p>
+          </div>
         </div>
       </footer>
     </div>

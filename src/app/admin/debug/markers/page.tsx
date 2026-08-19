@@ -42,6 +42,7 @@ export default async function DebugMarkersIndex() {
   return (
     <div className="min-h-screen bg-slate-50 p-8">
       <div className="max-w-5xl mx-auto">
+        <Link href="/admin/dashboard" className="text-sm font-medium text-indigo-600 hover:underline mb-4 inline-block">&larr; Kembali ke Dashboard Admin</Link>
         <h1 className="text-3xl font-bold text-slate-900 mb-2">Debug: Behavioral Markers</h1>
         <p className="text-slate-600 mb-8">Hasil pipeline agregasi _rule-based_ Facione.</p>
 

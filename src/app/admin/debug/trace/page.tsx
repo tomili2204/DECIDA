@@ -28,9 +28,10 @@ export default async function DebugTraceIndex() {
 
   return (
     <div className="min-h-screen bg-slate-50 p-8">
-      <div className="max-w-4xl mx-auto">
-        <h1 className="text-3xl font-bold text-slate-900 mb-6">Debug: Digital Cognitive Trace</h1>
-        <p className="text-slate-600 mb-8">Pilih sesi untuk melihat aliran event secara detail.</p>
+      <div className="max-w-5xl mx-auto">
+        <Link href="/admin/dashboard" className="text-sm font-medium text-indigo-600 hover:underline mb-4 inline-block">&larr; Kembali ke Dashboard Admin</Link>
+        <h1 className="text-3xl font-bold text-slate-900 mb-2">Raw Event Trace</h1>
+        <p className="text-slate-600 mb-8">Log event mentah dari _Spreadsheet Interaktif_ tanpa agregasi.</p>
 
         <div className="bg-white rounded-xl shadow border border-slate-200 overflow-hidden">
           <table className="w-full text-left text-sm text-slate-600">

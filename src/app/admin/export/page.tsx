@@ -37,11 +37,9 @@ export default async function ExportPage() {
       <div className="max-w-4xl mx-auto space-y-8">
         
         <div className="mb-8">
-          <Link href="/admin/debug/markers" className="text-sm font-medium text-indigo-600 hover:underline mb-2 inline-block">
-            ← Kembali ke Daftar Sesi
-          </Link>
-          <h1 className="text-3xl font-bold text-slate-900">Ekspor Dataset Penelitian</h1>
-          <p className="text-slate-500 mt-2">Unduh data riset DECIDA dalam format CSV atau JSON untuk dianalisis lebih lanjut menggunakan SPSS, R, atau Python.</p>
+          <Link href="/admin/dashboard" className="text-sm font-medium text-indigo-600 hover:underline mb-4 inline-block">&larr; Kembali ke Dashboard Admin</Link>
+          <h1 className="text-3xl font-bold text-slate-900 mb-2">Ekspor Data Penelitian</h1>
+          <p className="text-slate-600 mb-8">Tarik data dari database Supabase dalam format CSV untuk dianalisis lebih lanjut menggunakan SPSS, R, atau Python.</p>
         </div>
 
         <div className="grid gap-6">
