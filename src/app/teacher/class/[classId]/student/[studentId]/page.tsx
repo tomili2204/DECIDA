@@ -89,7 +89,7 @@ export default async function StudentDetailPage(props: { params: Promise<{ class
                 <div key={session.id} className="bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-sm">
                   <div className="px-6 py-4 bg-slate-100/50 border-b border-slate-200 flex items-center justify-between">
                     <div>
-                      <h3 className="font-bold text-slate-900">{session.missions?.title}</h3>
+                      <h3 className="font-bold text-slate-900">{(session.missions as any)?.title}</h3>
                       <p className="text-xs text-slate-500 mt-1">
                         Mulai: {new Date(session.created_at).toLocaleDateString('id-ID', { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' })}
                       </p>

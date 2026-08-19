@@ -62,9 +62,9 @@ export default async function DebugMarkersIndex() {
                 return (
                   <tr key={row.session_id} className="hover:bg-slate-50 transition-colors">
                     <td className="px-6 py-4 font-medium text-slate-900">
-                      {s.profiles?.full_name} <span className="text-xs text-slate-400 font-normal">({s.profiles?.jenjang})</span>
+                      {(s.profiles as any)?.full_name} <span className="text-xs text-slate-400 font-normal">({(s.profiles as any)?.jenjang})</span>
                     </td>
-                    <td className="px-6 py-4">{s.missions?.title}</td>
+                    <td className="px-6 py-4">{(s.missions as any)?.title}</td>
                     <td className="px-6 py-4">
                       <Link href={`/admin/debug/markers/${row.session_id}`} className="text-indigo-600 hover:text-indigo-900 font-medium hover:underline">
                         Lihat Marker & Evidence
@@ -99,8 +99,8 @@ export default async function DebugMarkersIndex() {
                 <tbody className="divide-y divide-slate-200">
                   {completedWithoutMarkers.map((s: any) => (
                     <tr key={s.id} className="hover:bg-red-50 transition-colors">
-                      <td className="px-6 py-4 font-medium text-slate-900">{s.profiles?.full_name} ({s.profiles?.jenjang})</td>
-                      <td className="px-6 py-4">{s.missions?.title}</td>
+                      <td className="px-6 py-4 font-medium text-slate-900">{(s.profiles as any)?.full_name} ({(s.profiles as any)?.jenjang})</td>
+                      <td className="px-6 py-4">{(s.missions as any)?.title}</td>
                       <td className="px-6 py-4">
                         <Link href={`/admin/debug/markers/${s.id}`} className="text-red-600 hover:text-red-900 font-medium hover:underline">
                           Hitung Sekarang

@@ -183,7 +183,7 @@ export default function WorkspaceClient({ session, mission, savedAnswers, studen
   }, [logEvent])
 
   const addChart = useCallback((chart: ChartDef) => {
-    logEvent('chart_create', { chart_id: chart.id, type: chart.type, columns: chart.columns })
+    logEvent('chart_create', { chart_id: chart.id, type: chart.type, columns: (chart as any).columns })
     setState((prev) => ({ ...prev, charts: [...prev.charts, chart] }))
   }, [logEvent])
 

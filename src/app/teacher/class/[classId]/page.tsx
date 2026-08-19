@@ -168,7 +168,7 @@ export default async function ClassDetailPage(props: {
                         <tr key={i} className="border-b border-slate-100 hover:bg-slate-50 transition-colors">
                           <td className="py-4 px-4 text-slate-900 font-medium whitespace-nowrap">
                             <Link href={`/teacher/class/${params.classId}/student/${m.student_id}`} className="hover:text-indigo-600 hover:underline">
-                              {m.profiles?.full_name}
+                              {(m.profiles as any)?.full_name}
                             </Link>
                           </td>
                           <td className="py-4 px-4 whitespace-nowrap">

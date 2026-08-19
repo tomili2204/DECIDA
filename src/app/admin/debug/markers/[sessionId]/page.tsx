@@ -70,7 +70,7 @@ export default async function DebugMarkerDetail({ params }: Props) {
               ← Kembali ke Daftar Markers
             </Link>
             <h1 className="text-2xl font-bold text-slate-900">
-              Marker Trace: {session.profiles?.full_name} ({session.profiles?.jenjang}) - {session.missions?.title}
+              Marker Trace: {(session.profiles as any)?.full_name} ({(session.profiles as any)?.jenjang}) - {(session.missions as any)?.title}
             </h1>
           </div>
           <div className="flex gap-3">
@@ -92,7 +92,7 @@ export default async function DebugMarkerDetail({ params }: Props) {
           <div className="bg-white rounded-xl shadow border border-indigo-200 overflow-hidden mb-8">
             <div className="bg-indigo-50 px-6 py-4 border-b border-indigo-100 flex justify-between items-center">
               <h2 className="text-lg font-bold text-indigo-900">✨ AI Interpreter (Gemini)</h2>
-              <span className="text-xs text-indigo-500 font-mono">Model: {aiReportRow.model_version}</span>
+              <span className="text-xs text-indigo-500 font-mono">Model: {aiReportRow?.model_version}</span>
             </div>
             <div className="p-6">
               <div className="mb-6">

@@ -17,7 +17,7 @@ export default function RadarChartClient({ data }: { data: RadarData[] }) {
           <PolarAngleAxis dataKey="indicator" tick={{ fill: '#475569', fontSize: 12, fontWeight: 600 }} />
           <PolarRadiusAxis angle={30} domain={[0, 4]} tick={{ fill: '#94a3b8', fontSize: 10 }} tickCount={5} />
           <Tooltip 
-            formatter={(value: number, name: string, props: any) => [props.payload.level, 'Level']}
+            formatter={(value: any, name: any, props: any) => [props.payload.level, 'Level']}
             contentStyle={{ borderRadius: '8px', border: '1px solid #e2e8f0' }}
           />
           <Radar name="Mahasiswa" dataKey="score" stroke="#6366f1" fill="#818cf8" fillOpacity={0.5} />

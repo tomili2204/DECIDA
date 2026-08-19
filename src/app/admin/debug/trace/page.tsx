@@ -47,8 +47,8 @@ export default async function DebugTraceIndex() {
               {sessions?.map((s: any) => (
                 <tr key={s.id} className="hover:bg-slate-50 transition-colors">
                   <td className="px-6 py-4 whitespace-nowrap">{new Date(s.created_at).toLocaleString('id-ID')}</td>
-                  <td className="px-6 py-4 font-medium text-slate-900">{s.profiles?.full_name}</td>
-                  <td className="px-6 py-4">{s.missions?.title}</td>
+                  <td className="px-6 py-4 font-medium text-slate-900">{(s.profiles as any)?.full_name}</td>
+                  <td className="px-6 py-4">{(s.missions as any)?.title}</td>
                   <td className="px-6 py-4">
                     <span className={`px-2.5 py-1 rounded-full text-xs font-medium ${s.status === 'completed' ? 'bg-emerald-100 text-emerald-800' : 'bg-amber-100 text-amber-800'}`}>
                       {s.status}

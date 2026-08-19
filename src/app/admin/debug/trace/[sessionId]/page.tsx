@@ -43,7 +43,7 @@ export default async function DebugTraceDetail({ params }: Props) {
               ← Kembali ke Daftar Sesi
             </Link>
             <h1 className="text-2xl font-bold text-slate-900">
-              Trace: {session.profiles?.full_name} - {session.missions?.title}
+              Trace: {(session.profiles as any)?.full_name} - {(session.missions as any)?.title}
             </h1>
           </div>
           <span className={`px-3 py-1.5 rounded-full text-sm font-semibold ${session.status === 'completed' ? 'bg-emerald-100 text-emerald-800' : 'bg-amber-100 text-amber-800'}`}>

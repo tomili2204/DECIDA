@@ -71,8 +71,8 @@ export default async function TeacherDashboardPage({ params }: { params: Promise
             <Link href="/admin/debug/markers" className="text-sm font-medium text-indigo-600 hover:underline mb-2 inline-block">
               ← Kembali ke Daftar Sesi
             </Link>
-            <h1 className="text-3xl font-bold text-slate-900">Dasbor Analitik: {session.profiles?.full_name}</h1>
-            <p className="text-slate-500 mt-1">Misi: {session.missions?.title} • Jenjang: {session.profiles?.jenjang} • {new Date(session.created_at).toLocaleString('id-ID')}</p>
+            <h1 className="text-3xl font-bold text-slate-900">Dasbor Analitik: {(session.profiles as any)?.full_name}</h1>
+            <p className="text-slate-500 mt-1">Misi: {(session.missions as any)?.title} • Jenjang: {(session.profiles as any)?.jenjang} • {new Date(session.created_at).toLocaleString('id-ID')}</p>
           </div>
           <Link href="/admin/export" className="bg-white border border-slate-300 text-slate-700 px-4 py-2 rounded-lg font-medium hover:bg-slate-50 shadow-sm">
             Unduh Dataset
