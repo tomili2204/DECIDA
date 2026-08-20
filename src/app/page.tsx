@@ -169,7 +169,7 @@ export default function LandingPage() {
           </div>
           <div className="flex gap-6 items-center">
             <Link href="/panduan" className="text-sm hover:text-white transition-colors">Buku Panduan</Link>
-            <p className="text-sm">Riset Inovasi Pendidikan Tinggi</p>
+            <Image src="/um-logo.png" alt="Universitas Negeri Malang" width={150} height={40} className="h-10 w-auto rounded-lg opacity-90 hover:opacity-100 transition-opacity" />
           </div>
         </div>
       </footer>
