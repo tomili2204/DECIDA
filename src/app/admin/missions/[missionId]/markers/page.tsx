@@ -2,6 +2,7 @@ import { createClient } from '@/lib/supabase/server'
 import { createClient as createAdminSupabase } from '@supabase/supabase-js'
 import { notFound, redirect } from 'next/navigation'
 import Link from 'next/link'
+import MarkerEditorClient from './MarkerEditorClient'
 
 interface Props {
   params: Promise<{ missionId: string }>
@@ -50,53 +51,10 @@ export default async function MarkerRulesConfigPage({ params }: Props) {
         <Link href="/admin/missions" className="text-sm font-medium text-indigo-600 hover:underline mb-4 inline-block">
           &larr; Kembali ke Daftar Misi
         </Link>
-        <h1 className="text-2xl font-bold text-slate-900 mb-2">Inspeksi Markers AI (Read-Only)</h1>
-        <p className="text-slate-600 mb-6">Misi: {mission.title}</p>
-        <p className="text-amber-600 text-sm mb-6 bg-amber-50 border border-amber-200 p-3 rounded-lg">
-          ⚠️ Admin hanya dapat melihat konfigurasi markers. Konfigurasi ini dikelola secara internal oleh sistem.
-        </p>
-
-        <div className="bg-white rounded-xl shadow border border-slate-200 overflow-hidden p-6">
-          <p className="text-sm text-slate-500 mb-4">
-            Aturan ekstraksi _behavioral markers_ (tahap 4). Konfigurasi ini dibaca saat sistem mengagregasi *trace* setiap sesi untuk menentukan *raw score* tiap indikator.
-          </p>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {Object.entries(currentRules).map(([indicator, rules]) => (
-              <div key={indicator} className="bg-slate-50 border border-slate-200 rounded-xl p-5 shadow-sm">
-                <h3 className="font-bold text-lg text-slate-800 capitalize mb-4 pb-2 border-b border-slate-200 flex items-center gap-2">
-                  <div className="w-2 h-2 rounded-full bg-indigo-500"></div>
-                  {indicator.replace('_', ' ')}
-                </h3>
-                <div className="space-y-4">
-                  {Object.entries(rules as any).map(([ruleKey, ruleValue]) => (
-                    <div key={ruleKey}>
-                      <span className="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">
-                        {ruleKey.replace(/_/g, ' ')}
-                      </span>
-                      {Array.isArray(ruleValue) ? (
-                        <div className="flex flex-wrap gap-2">
-                          {ruleValue.map((v, i) => (
-                            <span key={i} className="px-2.5 py-1 bg-white border border-indigo-200 text-indigo-700 rounded-md text-sm shadow-sm">
-                              {v}
-                            </span>
-                          ))}
-                        </div>
-                      ) : (
-                        <span className="inline-block px-3 py-1.5 bg-white border border-slate-200 rounded-md text-sm font-semibold text-slate-800 shadow-sm">
-                          {String(ruleValue)}
-                        </span>
-                      )}
-                    </div>
-                  ))}
-                  {Object.keys(rules as any).length === 0 && (
-                    <p className="text-sm text-slate-400 italic">Tidak ada aturan spesifik.</p>
-                  )}
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
+        <h1 className="text-2xl font-bold text-slate-900 mb-2">Konfigurasi Markers AI</h1>
+        <p className="text-slate-600 mb-8">Misi: {mission.title}</p>
+        
+        <MarkerEditorClient missionId={missionId} initialRules={currentRules} />
       </div>
     </div>
   )

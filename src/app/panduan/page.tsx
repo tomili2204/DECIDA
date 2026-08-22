@@ -53,7 +53,7 @@ export default function PanduanPage() {
                 <div>
                   <h3 className="text-lg font-semibold text-slate-800 mb-2">1. Cara Masuk (Login) Sistem</h3>
                   <p className="text-slate-600 leading-relaxed">
-                    Sistem DECIDA menggunakan otentikasi praktis tanpa *password* rumit. Anda <strong>tidak perlu mendaftar atau membuat akun</strong>. 
+                    Sistem DECIDA menggunakan otentikasi praktis tanpa <i>password</i> rumit. Anda <strong>tidak perlu mendaftar atau membuat akun</strong>. 
                     <br /><br />
                     Cukup kunjungi halaman login mahasiswa, lalu ketikkan <strong>Kode Mata Kuliah</strong> (kombinasi 6 huruf/angka yang diberikan oleh Dosen Anda) dan masukkan <strong>Nama Lengkap</strong> Anda. Sistem akan secara otomatis mengenali Anda dan memasukkan Anda ke dalam ruang kelas dosen yang bersangkutan.
                   </p>
@@ -69,7 +69,7 @@ export default function PanduanPage() {
                 <div>
                   <h3 className="text-lg font-semibold text-slate-800 mb-2">3. Membaca Laporan Evaluasi AI</h3>
                   <p className="text-slate-600 leading-relaxed">
-                    Setelah Anda menekan tombol <strong>Selesai & Kirim</strong> di langkah terakhir, AI (Google Gemini) akan memproses jejak langkah (*trace*) dan jawaban Anda. Setelah selesai, klik tombol <strong>Lihat Hasil Evaluasi</strong> untuk melihat Profil Kognitif Anda. Anda akan mendapatkan radar chart kekuatan Anda, tingkat kemampuan (Perlu Bimbingan s.d Mahir), serta saran/rekomendasi otomatis untuk memperbaiki pola pikir Anda.
+                    Setelah Anda menekan tombol <strong>Selesai & Kirim</strong> di langkah terakhir, AI (Google Gemini) akan memproses jejak langkah (<i>trace</i>) dan jawaban Anda. Setelah selesai, klik tombol <strong>Lihat Hasil Evaluasi</strong> untuk melihat Profil Kognitif Anda. Anda akan mendapatkan radar chart kekuatan Anda, tingkat kemampuan (Perlu Bimbingan s.d Mahir), serta saran/rekomendasi otomatis untuk memperbaiki pola pikir Anda.
                   </p>
                 </div>
               </div>
@@ -97,13 +97,13 @@ export default function PanduanPage() {
                 <div>
                   <h3 className="text-lg font-semibold text-slate-800 mb-2">2. Memantau Kemajuan Kelas</h3>
                   <p className="text-slate-600 leading-relaxed">
-                    Setiap interaksi mahasiswa tercatat secara *real-time*. Di halaman detail Misi, Anda dapat melihat daftar mahasiswa yang sedang mengerjakan misi, yang sudah selesai, maupun yang belum memulai. Anda bisa langsung melihat skor AI mereka yang otomatis diagregasi ke dalam tabel.
+                    Setiap interaksi mahasiswa tercatat secara <i>real-time</i>. Di halaman detail Misi, Anda dapat melihat daftar mahasiswa yang sedang mengerjakan misi, yang sudah selesai, maupun yang belum memulai. Anda bisa langsung melihat skor AI mereka yang otomatis diagregasi ke dalam tabel.
                   </p>
                 </div>
                 <div>
                   <h3 className="text-lg font-semibold text-slate-800 mb-2">3. Melakukan Intervensi Berbasis AI</h3>
                   <p className="text-slate-600 leading-relaxed">
-                    Klik nama mahasiswa yang sudah menyelesaikan misi untuk melihat hasil <strong>Explainable AI</strong>. Anda akan melihat bukti konkret (*evidence*) log klik mahasiswa yang dijadikan dasar penilaian oleh AI, lengkap dengan narasi evaluatif. Gunakan wawasan ini untuk memberikan bimbingan (*scaffolding*) yang tepat sasaran bagi mahasiswa yang masih berada di level "Perlu Bimbingan".
+                    Klik nama mahasiswa yang sudah menyelesaikan misi untuk melihat hasil <strong>Explainable AI</strong>. Anda akan melihat bukti konkret (<i>evidence</i>) log klik mahasiswa yang dijadikan dasar penilaian oleh AI, lengkap dengan narasi evaluatif. Gunakan wawasan ini untuk memberikan bimbingan (<i>scaffolding</i>) yang tepat sasaran bagi mahasiswa yang masih berada di level "Perlu Bimbingan".
                   </p>
                 </div>
               </div>

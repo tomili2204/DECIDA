@@ -2,6 +2,7 @@ import { createClient } from '@/lib/supabase/server'
 import { createClient as createAdminSupabase } from '@supabase/supabase-js'
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
+import MissionsTable from './MissionsTable'
 
 function getAdmin() {
   return createAdminSupabase(
@@ -47,47 +48,25 @@ export default async function AdminMissionsPage() {
         </div>
       </header>
       <main className="max-w-6xl mx-auto px-6 py-12">
-        <div className="bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-sm">
-          <div className="overflow-x-auto">
-            <table className="w-full text-left border-collapse">
-              <thead>
-                <tr className="border-b border-slate-200 bg-slate-50">
-                  <th className="py-4 px-6 font-semibold text-sm text-slate-600">Judul Misi</th>
-                  <th className="py-4 px-6 font-semibold text-sm text-slate-600">Mata Kuliah</th>
-                  <th className="py-4 px-6 font-semibold text-sm text-slate-600">Dosen</th>
-                  <th className="py-4 px-6 font-semibold text-sm text-slate-600">Tingkat Kesulitan</th>
-                  <th className="py-4 px-6 font-semibold text-sm text-slate-600">Dibuat Pada</th>
-                  <th className="py-4 px-6 font-semibold text-sm text-slate-600">Aksi (Read-Only)</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-slate-100">
-                {missions?.map((m: any) => (
-                  <tr key={m.id} className="hover:bg-slate-50 transition-colors">
-                    <td className="py-4 px-6 text-slate-800 font-medium">{m.title}</td>
-                    <td className="py-4 px-6 text-slate-600">{(m.classes as any)?.name || '-'}</td>
-                    <td className="py-4 px-6 text-slate-600">{(m.profiles as any)?.full_name || '-'}</td>
-                    <td className="py-4 px-6">
-                      <span className="px-2.5 py-1 text-xs font-semibold rounded-full bg-slate-100 text-slate-700 border border-slate-200">
-                        {m.difficulty || '-'}
-                      </span>
-                    </td>
-                    <td className="py-4 px-6 text-slate-500 text-sm">
-                      {new Date(m.created_at).toLocaleDateString('id-ID')}
-                    </td>
-                    <td className="py-4 px-6">
-                      <div className="flex gap-2">
-                        <Link href={`/admin/missions/${m.id}/rubrics`} className="text-xs px-3 py-1.5 bg-white text-indigo-600 hover:bg-indigo-50 rounded-lg transition-colors border border-indigo-200">
-                          Rubrik
-                        </Link>
-                        <Link href={`/admin/missions/${m.id}/markers`} className="text-xs px-3 py-1.5 bg-white text-teal-600 hover:bg-teal-50 rounded-lg transition-colors border border-teal-200">
-                          Markers
-                        </Link>
-                      </div>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+        <MissionsTable initialMissions={missions || []} />
+
+        <div className="mt-8 bg-indigo-50 border border-indigo-100 rounded-2xl p-6">
+          <h3 className="text-lg font-bold text-indigo-900 mb-4 flex items-center gap-2">
+            <span className="text-xl">💡</span> Penjelasan Parameter AI
+          </h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="bg-white p-5 rounded-xl border border-indigo-100/50 shadow-sm">
+              <h4 className="font-bold text-indigo-700 mb-2 border-b border-slate-100 pb-2">Apa itu Rubrik?</h4>
+              <p className="text-sm text-slate-600 leading-relaxed">
+                <strong>Rubrik</strong> adalah batasan skor dan instruksi linguistik (<i>Prompt Engineering</i>) yang diberikan kepada AI Gemini. Rubrik inilah yang digunakan oleh AI untuk menerjemahkan nilai angka mentah menjadi predikat (seperti: <em>Perlu Bimbingan, Berkembang, Cakap, Mahir</em>).
+              </p>
+            </div>
+            <div className="bg-white p-5 rounded-xl border border-indigo-100/50 shadow-sm">
+              <h4 className="font-bold text-teal-700 mb-2 border-b border-slate-100 pb-2">Apa itu Markers?</h4>
+              <p className="text-sm text-slate-600 leading-relaxed">
+                <strong>Markers</strong> (Penanda Perilaku) adalah kumpulan logika aturan (<i>rule-based logic</i>) yang digunakan untuk mengekstrak dan menangkap jejak interaksi mahasiswa (seperti: penggunaan rumus rata-rata, pengurutan, dsb) dari Spreadsheet secara otomatis sebelum dikirim ke AI.
+              </p>
+            </div>
           </div>
         </div>
       </main>

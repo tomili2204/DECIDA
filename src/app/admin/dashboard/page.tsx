@@ -77,7 +77,7 @@ export default async function AdminDashboard() {
           </div>
           <div className="bg-white border border-slate-200 rounded-xl p-6 hover:shadow-md transition-shadow flex flex-col">
             <h3 className="text-xl font-bold text-slate-800 mb-2">Manajemen Misi</h3>
-            <p className="text-slate-600 mb-6 text-sm flex-1">Kelola skenario, dataset, dan rubrik misi.</p>
+            <p className="text-slate-600 mb-6 text-sm flex-1">Kelola skenario misi, dataset, serta konfigurasi parameter AI (Rubrik & Markers) untuk kalibrasi penilaian kognitif.</p>
             <Link href="/admin/missions" className="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-medium rounded-lg transition-colors text-sm w-max">
               Kelola Misi
             </Link>
