@@ -3,6 +3,7 @@ import { createClient as createAdminSupabase } from '@supabase/supabase-js'
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import MissionPreviewList from './MissionPreviewList'
+import RemoveStudentButton from './RemoveStudentButton'
 
 function getAdmin() {
   return createAdminSupabase(
@@ -78,15 +79,19 @@ export default async function ClassDetailPage(props: {
   if (studentIds.length > 0) {
     const { data: latestSessions } = await admin
       .from('sessions')
-      .select('student_id, ai_reports(report_data)')
+      .select('student_id, ai_reports(report_data), missions(title, difficulty)')
       .in('student_id', studentIds)
       .order('created_at', { ascending: false })
 
     if (latestSessions) {
       latestSessions.forEach((s: any) => {
         const reportData = Array.isArray(s.ai_reports) ? s.ai_reports[0]?.report_data : s.ai_reports?.report_data
-        if (!aiReportsMap[s.student_id] && reportData) {
-          aiReportsMap[s.student_id] = reportData
+        if (!aiReportsMap[s.student_id]) {
+          aiReportsMap[s.student_id] = {
+            reportData: reportData || null,
+            missionTitle: s.missions?.title || null,
+            missionDifficulty: s.missions?.difficulty || null
+          }
         }
       })
     }
@@ -145,7 +150,8 @@ export default async function ClassDetailPage(props: {
                   <thead>
                     <tr className="border-b border-slate-200">
                       <th className="py-3 px-4 font-semibold text-sm text-slate-500 whitespace-nowrap">Nama Lengkap</th>
-                      <th className="py-3 px-4 font-semibold text-sm text-slate-500 whitespace-nowrap">Status</th>
+                      <th className="py-3 px-4 font-semibold text-sm text-slate-500 whitespace-nowrap">Aksi</th>
+                      <th className="py-3 px-4 font-semibold text-sm text-slate-500 whitespace-nowrap max-w-[200px]">Misi Terakhir</th>
                       <th className="py-3 px-4 font-semibold text-xs text-slate-400 text-center" title="Interpretasi">INT</th>
                       <th className="py-3 px-4 font-semibold text-xs text-slate-400 text-center" title="Analisis">ANA</th>
                       <th className="py-3 px-4 font-semibold text-xs text-slate-400 text-center" title="Evaluasi">EVA</th>
@@ -156,7 +162,8 @@ export default async function ClassDetailPage(props: {
                   </thead>
                   <tbody>
                     {members.map((m: any, i: number) => {
-                      const aiReport = aiReportsMap[m.student_id]
+                      const sessionData = aiReportsMap[m.student_id]
+                      const aiReport = sessionData?.reportData
                       
                       const renderBadge = (indicatorName: string) => {
                         if (!aiReport || !aiReport.profil_per_indikator) return <span className="text-slate-300">-</span>
@@ -187,9 +194,19 @@ export default async function ClassDetailPage(props: {
                             </Link>
                           </td>
                           <td className="py-4 px-4 whitespace-nowrap">
-                            <span className="px-2.5 py-1 text-xs font-semibold rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200">
-                              Aktif
-                            </span>
+                            <RemoveStudentButton classId={params.classId} studentId={m.student_id} studentName={(m.profiles as any)?.full_name} />
+                          </td>
+                          <td className="py-4 px-4 max-w-[200px]">
+                            {sessionData?.missionTitle ? (
+                              <div>
+                                <p className="text-sm text-slate-700 truncate" title={sessionData.missionTitle}>{sessionData.missionTitle}</p>
+                                <span className="inline-block mt-1 px-2 py-0.5 text-[10px] font-medium rounded-full bg-slate-100 text-slate-600 border border-slate-200">
+                                  {sessionData.missionDifficulty || 'Umum'}
+                                </span>
+                              </div>
+                            ) : (
+                              <span className="text-xs text-slate-400 italic">Belum ada</span>
+                            )}
                           </td>
                           <td className="py-4 px-2 text-center">{renderBadge('Interpretasi')}</td>
                           <td className="py-4 px-2 text-center">{renderBadge('Analisis')}</td>
