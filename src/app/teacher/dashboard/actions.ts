@@ -35,3 +35,22 @@ export async function createClassAction(formData: FormData) {
 
   revalidatePath('/teacher/dashboard')
 }
+
+export async function deleteClassAction(classId: string) {
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) throw new Error('Unauthorized')
+
+  const admin = getAdmin()
+  
+  // Verify ownership
+  const { data: cls } = await admin.from('classes').select('teacher_id').eq('id', classId).single()
+  if (!cls || cls.teacher_id !== user.id) {
+    throw new Error('Unauthorized')
+  }
+
+  const { error } = await admin.from('classes').delete().eq('id', classId)
+  if (error) throw new Error(error.message)
+
+  revalidatePath('/teacher/dashboard')
+}

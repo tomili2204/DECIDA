@@ -3,6 +3,7 @@ import { createClient as createAdminSupabase } from '@supabase/supabase-js'
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import CreateClassButton from './CreateClassButton'
+import DeleteClassButton from './DeleteClassButton'
 
 function getAdmin() {
   return createAdminSupabase(
@@ -114,9 +115,12 @@ export default async function TeacherDashboard() {
                   <p className="text-sm text-slate-500 mb-1">Kode Kelas</p>
                   <p className="font-mono text-lg font-bold text-indigo-600">{c.code}</p>
                 </div>
-                <Link href={`/teacher/class/${c.id}`} className="w-full py-2 bg-slate-50 hover:bg-indigo-50 text-indigo-700 text-sm font-medium rounded-lg transition-colors border border-slate-200 hover:border-indigo-200 flex justify-center text-center">
-                  Lihat Detail Kelas
-                </Link>
+                <div className="flex gap-2">
+                  <Link href={`/teacher/class/${c.id}`} className="flex-1 py-2 bg-slate-50 hover:bg-indigo-50 text-indigo-700 text-sm font-medium rounded-lg transition-colors border border-slate-200 hover:border-indigo-200 flex justify-center text-center">
+                    Lihat Detail
+                  </Link>
+                  <DeleteClassButton classId={c.id} />
+                </div>
               </div>
             ))}
           </div>
