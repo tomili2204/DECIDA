@@ -20,7 +20,7 @@ export default function LandingPage() {
               href="/panduan" 
               className="text-sm font-semibold text-slate-600 hover:text-indigo-600 transition-colors px-3 py-2"
             >
-              Buku Panduan
+              Petunjuk Penggunaan
             </Link>
             <Link 
               href="/login" 
@@ -168,7 +168,7 @@ export default function LandingPage() {
             <span className="font-semibold text-slate-300">DECIDA Platform &copy; {new Date().getFullYear()}</span>
           </div>
           <div className="flex gap-6 items-center">
-            <Link href="/panduan" className="text-sm hover:text-white transition-colors">Buku Panduan</Link>
+            <Link href="/panduan" className="text-sm hover:text-white transition-colors">Petunjuk Penggunaan</Link>
             <Image src="/um-logo.png" alt="Universitas Negeri Malang" width={150} height={40} className="h-10 w-auto rounded-lg opacity-90 hover:opacity-100 transition-opacity" />
           </div>
         </div>
