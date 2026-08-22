@@ -1,6 +1,7 @@
 import { createClient } from '@/lib/supabase/server'
 import { createClient as createAdminSupabase } from '@supabase/supabase-js'
 import { redirect } from 'next/navigation'
+import Link from 'next/link'
 import { startMission } from './actions'
 
 function getAdmin() {
@@ -134,21 +135,27 @@ export default async function WorkspacePage() {
                     {mission.scenario}
                   </p>
 
-                  <form action={startMission.bind(null, mission.id)}>
-                    <button
-                      type="submit"
-                      className={`w-full py-2.5 rounded-xl font-semibold text-sm transition-all ${
-                        isCompleted
-                          ? 'bg-slate-100 text-slate-400 border border-slate-200 cursor-not-allowed'
-                          : isOngoing
-                          ? 'bg-amber-100 hover:bg-amber-200 text-amber-800 border border-amber-200'
-                          : 'bg-indigo-600 hover:bg-indigo-700 text-white shadow-sm'
-                      }`}
-                      disabled={isCompleted}
+                  {isCompleted ? (
+                    <Link
+                      href={`/workspace/hasil/${session.id}`}
+                      className="w-full block text-center py-2.5 rounded-xl font-semibold text-sm transition-all bg-emerald-100 hover:bg-emerald-200 text-emerald-800 border border-emerald-200"
                     >
-                      {isCompleted ? 'Sudah Selesai' : isOngoing ? '▶ Lanjutkan Misi' : '🚀 Mulai Misi'}
-                    </button>
-                  </form>
+                      Lihat Hasil Evaluasi
+                    </Link>
+                  ) : (
+                    <form action={startMission.bind(null, mission.id)}>
+                      <button
+                        type="submit"
+                        className={`w-full py-2.5 rounded-xl font-semibold text-sm transition-all ${
+                          isOngoing
+                            ? 'bg-amber-100 hover:bg-amber-200 text-amber-800 border border-amber-200'
+                            : 'bg-indigo-600 hover:bg-indigo-700 text-white shadow-sm'
+                        }`}
+                      >
+                        {isOngoing ? '▶ Lanjutkan Misi' : '🚀 Mulai Misi'}
+                      </button>
+                    </form>
+                  )}
                 </div>
               )
             })}
