@@ -1,7 +1,16 @@
 import { createClient } from '@/lib/supabase/server'
+import { createClient as createAdminSupabase } from '@supabase/supabase-js'
 import { notFound, redirect } from 'next/navigation'
 import Link from 'next/link'
 import { revalidatePath } from 'next/cache'
+
+function getAdmin() {
+  return createAdminSupabase(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.SUPABASE_SERVICE_ROLE_KEY!,
+    { auth: { autoRefreshToken: false, persistSession: false } }
+  )
+}
 
 interface Props {
   params: Promise<{ sessionId: string }>
@@ -10,26 +19,27 @@ interface Props {
 export default async function DebugMarkerDetail({ params }: Props) {
   const { sessionId } = await params
   const supabase = await createClient()
+  const admin = getAdmin()
 
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) redirect('/login')
 
-  const { data: profile } = await supabase.from('profiles').select('role').eq('id', user.id).single()
+  const { data: profile } = await admin.from('profiles').select('role').eq('id', user.id).single()
   if (!profile || (profile.role !== 'admin' && profile.role !== 'teacher')) {
     redirect('/')
   }
 
   // Fetch session
-  const { data: session } = await supabase
+  const { data: session } = await admin
     .from('sessions')
-    .select('id, status, profiles:student_id(full_name, jenjang), missions:mission_id(title)')
+    .select('id, status, profiles:student_id(full_name), missions:mission_id(title)')
     .eq('id', sessionId)
     .single()
 
   if (!session) notFound()
 
   // Fetch markers
-  const { data: markerRow } = await supabase
+  const { data: markerRow } = await admin
     .from('markers')
     .select('indicators')
     .eq('session_id', sessionId)
@@ -38,7 +48,7 @@ export default async function DebugMarkerDetail({ params }: Props) {
   const indicators = markerRow?.indicators || null
 
   // Fetch AI Report
-  const { data: aiReportRow } = await supabase
+  const { data: aiReportRow } = await admin
     .from('ai_reports')
     .select('report_data, created_at, model_version')
     .eq('session_id', sessionId)
@@ -70,7 +80,7 @@ export default async function DebugMarkerDetail({ params }: Props) {
               ← Kembali ke Daftar Markers
             </Link>
             <h1 className="text-2xl font-bold text-slate-900">
-              Marker Trace: {(session.profiles as any)?.full_name} ({(session.profiles as any)?.jenjang}) - {(session.missions as any)?.title}
+              Marker Trace: {(session.profiles as any)?.full_name} - {(session.missions as any)?.title}
             </h1>
           </div>
           <div className="flex gap-3">

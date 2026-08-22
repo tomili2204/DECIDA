@@ -34,8 +34,6 @@ export default async function TeacherDashboard() {
     .eq('teacher_id', user.id)
     .order('created_at', { ascending: false })
 
-  const jenjangDisplay: Record<string, string> = { SD: 'Semester 1-2', SMP: 'Semester 3-4', SMA: 'Semester 5-6' }
-
   return (
     <div className="min-h-screen bg-slate-50">
       {/* Header */}
@@ -77,12 +75,32 @@ export default async function TeacherDashboard() {
           <p className="text-slate-600">Kelola mata kuliah, mahasiswa, dan pantau perkembangan belajar mereka.</p>
         </div>
 
+        {/* Quick Actions */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-10">
+          <Link href="/teacher/missions" className="bg-gradient-to-br from-indigo-600 to-indigo-800 rounded-2xl p-6 text-white hover:shadow-lg hover:shadow-indigo-500/30 transition-all group relative overflow-hidden">
+            <div className="relative z-10">
+              <div className="w-12 h-12 bg-white/20 backdrop-blur-md rounded-xl flex items-center justify-center mb-4 text-2xl group-hover:scale-110 transition-transform">
+                🤖
+              </div>
+              <h3 className="text-xl font-bold mb-1">Manajemen Misi & AI</h3>
+              <p className="text-indigo-100 text-sm">Buat dan kelola studi kasus menggunakan asisten AI untuk kelas Anda.</p>
+            </div>
+            <svg className="absolute -bottom-4 -right-4 w-32 h-32 text-white/5" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2L2 22h20L12 2z"/></svg>
+          </Link>
+          
+          <div className="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm flex flex-col justify-center items-start">
+            <div className="w-12 h-12 bg-emerald-100 text-emerald-600 rounded-xl flex items-center justify-center mb-4 text-xl">
+              📚
+            </div>
+            <h3 className="text-xl font-bold text-slate-800 mb-1">Mata Kuliah</h3>
+            <p className="text-slate-500 text-sm mb-4">Total: {classes ? classes.length : 0} Kelas Aktif</p>
+            <CreateClassButton variant="header" />
+          </div>
+        </div>
+
         {/* Classes Section */}
         <div className="flex items-center justify-between mb-6">
-          <h2 className="text-xl font-bold text-slate-900">Mata Kuliah Saya</h2>
-          {classes && classes.length > 0 && (
-            <CreateClassButton variant="header" />
-          )}
+          <h2 className="text-xl font-bold text-slate-900">Daftar Mata Kuliah</h2>
         </div>
         
         {classes && classes.length > 0 ? (
@@ -91,9 +109,6 @@ export default async function TeacherDashboard() {
               <div key={c.id} className="bg-white border border-slate-200 rounded-xl p-5 hover:border-indigo-300 transition-all shadow-sm hover:shadow-md">
                 <div className="flex justify-between items-start mb-4">
                   <h3 className="text-lg font-bold text-slate-900">{c.name}</h3>
-                  <span className="px-2.5 py-1 text-xs font-semibold rounded-full bg-indigo-50 text-indigo-700 border border-indigo-100">
-                    {jenjangDisplay[c.jenjang] || c.jenjang}
-                  </span>
                 </div>
                 <div className="mb-6">
                   <p className="text-sm text-slate-500 mb-1">Kode Kelas</p>

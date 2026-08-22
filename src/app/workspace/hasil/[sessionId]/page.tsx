@@ -1,4 +1,5 @@
 import { createClient } from '@/lib/supabase/server'
+import { createClient as createAdminSupabase } from '@supabase/supabase-js'
 import { notFound, redirect } from 'next/navigation'
 import Link from 'next/link'
 import AutoRefresh from '@/components/workspace/AutoRefresh'
@@ -6,6 +7,14 @@ import CognitiveRadarChart from '@/components/workspace/CognitiveRadarChart'
 
 interface Props {
   params: Promise<{ sessionId: string }>
+}
+
+function getAdmin() {
+  return createAdminSupabase(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.SUPABASE_SERVICE_ROLE_KEY!,
+    { auth: { autoRefreshToken: false, persistSession: false } }
+  )
 }
 
 const FACIONE_INDICATORS = ['Interpretasi', 'Analisis', 'Evaluasi', 'Inferensi', 'Eksplanasi', 'Regulasi Diri']
@@ -28,11 +37,12 @@ const LEVEL_LABELS: Record<string, string> = {
 export default async function HasilPage({ params }: Props) {
   const { sessionId } = await params
   const supabase = await createClient()
+  const admin = getAdmin()
 
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) redirect('/login')
 
-  const { data: session, error } = await supabase
+  const { data: session, error } = await admin
     .from('sessions')
     .select('id, status, student_id, missions(title, jenjang)')
     .eq('id', sessionId)
@@ -40,14 +50,14 @@ export default async function HasilPage({ params }: Props) {
 
   if (error || !session || session.student_id !== user.id) notFound()
 
-  const { data: answers } = await supabase
+  const { data: answers } = await admin
     .from('step_answers')
     .select('step_number, answer_text, evidence_links')
     .eq('session_id', sessionId)
     .order('step_number')
 
   // Cek AI Report
-  const { data: aiReportRow } = await supabase
+  const { data: aiReportRow } = await admin
     .from('ai_reports')
     .select('report_data')
     .eq('session_id', sessionId)
@@ -60,7 +70,7 @@ export default async function HasilPage({ params }: Props) {
     console.log("TRIGGERING FALLBACK FOR AI REPORT:", sessionId)
     
     // Pastikan markers sudah di-generate
-    const { data: markers } = await supabase.from('markers').select('session_id').eq('session_id', sessionId).single()
+    const { data: markers } = await admin.from('markers').select('session_id').eq('session_id', sessionId).single()
     if (!markers) {
        console.log("MARKERS MISSING, GENERATING MARKERS FIRST...")
        const { createAdminClient } = await import('@/lib/supabase/admin')

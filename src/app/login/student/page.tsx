@@ -1,51 +1,38 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useTransition } from 'react'
+import { loginStudent } from '../actions'
 
 export default function StudentLogin() {
   const [error, setError] = useState('')
-  const [logs, setLogs] = useState<string[]>([])
-  const [loading, setLoading] = useState(false)
+  const [isPending, startTransition] = useTransition()
   const [success, setSuccess] = useState(false)
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
     setError('')
-    setLogs([])
-    setLoading(true)
     setSuccess(false)
 
-    const form = new FormData(e.currentTarget)
-    const classCode = form.get('classCode') as string
-    const name = form.get('name') as string
+    const formData = new FormData(e.currentTarget)
 
-    try {
-      const res = await fetch('/api/login/student', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ classCode, name }),
-      })
+    startTransition(async () => {
+      try {
+        const result = await loginStudent(null, formData)
+        
+        if (result.error) {
+          setError(result.error)
+          return
+        }
 
-      const data = await res.json()
-      setLogs(data.logs || [])
-
-      if (!res.ok || data.error) {
-        setError(data.error || `HTTP ${res.status}`)
-        setLoading(false)
-        return
+        if (result.success && result.redirectTo) {
+          setSuccess(true)
+          // Instant redirect
+          window.location.href = result.redirectTo
+        }
+      } catch (err: any) {
+        setError(`Terjadi kesalahan: ${err.message}`)
       }
-
-      // Success! Redirect with hard navigation
-      setSuccess(true)
-      setLogs(prev => [...prev, 'API berhasil! Redirect ke /workspace dalam 1 detik...'])
-      
-      setTimeout(() => {
-        window.location.href = '/workspace'
-      }, 1000)
-    } catch (err: any) {
-      setError(`Network error: ${err.message}`)
-      setLoading(false)
-    }
+    })
   }
 
   return (
@@ -82,14 +69,7 @@ export default function StudentLogin() {
               </div>
             )}
 
-            {logs.length > 0 && (
-              <div className="bg-slate-900 p-4 rounded-xl max-h-48 overflow-y-auto shadow-inner">
-                <p className="text-xs font-bold text-indigo-400 mb-2">SERVER LOG:</p>
-                {logs.map((log, i) => (
-                  <p key={i} className="text-xs text-slate-300 font-mono leading-relaxed">{`> ${log}`}</p>
-                ))}
-              </div>
-            )}
+
 
             <div>
               <label className="block text-sm font-semibold text-slate-700 mb-1">Kode Mata Kuliah</label>
@@ -101,9 +81,9 @@ export default function StudentLogin() {
               <input name="name" type="text" required placeholder="Andi"
                 className="block w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm text-slate-900 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all outline-none" />
             </div>
-            <button type="submit" disabled={loading || success}
+            <button type="submit" disabled={isPending || success}
               className="w-full py-3 px-4 rounded-xl text-white bg-indigo-600 hover:bg-indigo-700 disabled:opacity-70 disabled:hover:bg-indigo-600 text-sm font-bold transition-all shadow-md shadow-indigo-600/20">
-              {loading ? 'Memproses...' : 'Masuk ke Ruang Kerja'}
+              {isPending ? 'Memproses...' : 'Masuk ke Ruang Kerja'}
             </button>
           </form>
 

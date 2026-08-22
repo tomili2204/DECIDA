@@ -20,9 +20,9 @@ export async function createClassAction(formData: FormData) {
   const admin = getAdmin()
   const name = formData.get('name') as string
   const code = formData.get('code') as string
-  const jenjang = formData.get('jenjang') as string
+  const jenjang = (formData.get('jenjang') as string) || 'SMA'
 
-  if (!name || !code || !jenjang) throw new Error('Data tidak lengkap')
+  if (!name || !code) throw new Error('Data tidak lengkap')
 
   const { error } = await admin.from('classes').insert({
     name,

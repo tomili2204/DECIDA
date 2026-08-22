@@ -1,5 +1,14 @@
 import { createClient } from '@/lib/supabase/server'
+import { createClient as createAdminSupabase } from '@supabase/supabase-js'
 import { NextResponse } from 'next/server'
+
+function getAdmin() {
+  return createAdminSupabase(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.SUPABASE_SERVICE_ROLE_KEY!,
+    { auth: { autoRefreshToken: false, persistSession: false } }
+  )
+}
 
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url)
@@ -7,28 +16,32 @@ export async function GET(request: Request) {
   const format = searchParams.get('format') || 'csv'
 
   const supabase = await createClient()
+  const admin = getAdmin()
   
-  // Minimal auth check for admin/researcher (simplified for now)
+  // Auth check for admin
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) return new NextResponse('Unauthorized', { status: 401 })
+  
+  const { data: profile } = await admin.from('profiles').select('role').eq('id', user.id).single()
+  if (profile?.role !== 'admin') return new NextResponse('Forbidden', { status: 403 })
 
   let data: any[] | null = []
   
   switch (type) {
     case 'activity_logs':
-      const { data: logs } = await supabase.from('activity_logs').select('*').order('created_at', { ascending: true })
+      const { data: logs } = await admin.from('activity_logs').select('*').order('created_at', { ascending: true })
       data = logs
       break
     case 'step_answers':
-      const { data: answers } = await supabase.from('step_answers').select('*').order('session_id').order('step_number')
+      const { data: answers } = await admin.from('step_answers').select('*').order('session_id').order('step_number')
       data = answers
       break
     case 'markers':
-      const { data: markers } = await supabase.from('markers').select('*')
+      const { data: markers } = await admin.from('markers').select('*')
       data = markers
       break
     case 'ai_reports':
-      const { data: reports } = await supabase.from('ai_reports').select('*')
+      const { data: reports } = await admin.from('ai_reports').select('*')
       data = reports
       break
     default:
@@ -36,7 +49,15 @@ export async function GET(request: Request) {
   }
 
   if (!data || data.length === 0) {
-    return new NextResponse('No data found', { status: 404 })
+    if (format === 'json') {
+      return NextResponse.json([])
+    }
+    return new NextResponse('message\n"Belum ada data di tabel ini"', {
+      headers: {
+        'Content-Type': 'text/csv; charset=utf-8',
+        'Content-Disposition': `attachment; filename="decida_${type}_empty.csv"`
+      }
+    })
   }
 
   if (format === 'json') {

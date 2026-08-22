@@ -2,6 +2,7 @@ import { createClient } from '@/lib/supabase/server'
 import { createClient as createAdminSupabase } from '@supabase/supabase-js'
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
+import MissionPreviewList from './MissionPreviewList'
 
 function getAdmin() {
   return createAdminSupabase(
@@ -56,6 +57,17 @@ export default async function ClassDetailPage(props: {
     console.error('Error fetching members:', membersErr)
   }
   
+  // Fetch available missions
+  const { data: missions, error: missionsErr } = await admin
+    .from('missions')
+    .select('id, title, scenario, difficulty')
+    .eq('class_id', params.classId)
+    .order('created_at', { ascending: true })
+
+  if (missionsErr) {
+    console.error('Error fetching missions:', missionsErr)
+  }
+
   const totalItems = count || 0
   const totalPages = Math.ceil(totalItems / limit)
 
@@ -80,8 +92,6 @@ export default async function ClassDetailPage(props: {
     }
   }
 
-  const jenjangDisplay: Record<string, string> = { SD: 'Semester 1-2', SMP: 'Semester 3-4', SMA: 'Semester 5-6' }
-
   return (
     <div className="min-h-screen bg-slate-50">
       <header className="border-b border-slate-200 bg-white">
@@ -93,14 +103,19 @@ export default async function ClassDetailPage(props: {
             <h1 className="text-xl font-bold text-slate-900">{classData.name}</h1>
             <p className="text-sm text-slate-500">
               Kode Kelas: <span className="font-mono bg-slate-100 px-1.5 py-0.5 rounded text-slate-700">{classData.code}</span>
-              <span className="mx-2">•</span>
-              {jenjangDisplay[classData.jenjang]}
             </p>
           </div>
         </div>
       </header>
 
-      <main className="max-w-5xl mx-auto px-6 py-8">
+      <main className="max-w-5xl mx-auto px-6 py-8 space-y-8">
+        
+        {/* Missions / Kasus Soal */}
+        <MissionPreviewList 
+          missions={missions || []} 
+        />
+
+        {/* Student List */}
         <div className="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm">
           <div className="flex items-center justify-between mb-6">
             <h2 className="font-bold text-slate-800 text-lg">Daftar Mahasiswa</h2>

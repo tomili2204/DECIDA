@@ -34,15 +34,15 @@ export default async function WorkspacePage() {
     .eq('student_id', user.id)
 
   const classes = memberships?.map((m: any) => m.classes).filter(Boolean) ?? []
-  const jenjangSet = new Set<string>(classes.map((c: any) => c.jenjang))
+  const classIds = classes.map((c: any) => c.id)
 
-  // Get missions matching jenjang
-  const { data: missions } = jenjangSet.size > 0
+  // Get missions matching class_ids
+  const { data: missions } = classIds.length > 0
     ? await admin
         .from('missions')
-        .select('id, title, jenjang, scenario')
-        .in('jenjang', [...jenjangSet])
-        .order('jenjang')
+        .select('id, title, difficulty, scenario')
+        .in('class_id', classIds)
+        .order('created_at')
     : { data: [] }
 
   // Get existing sessions
@@ -53,14 +53,6 @@ export default async function WorkspacePage() {
 
   const sessionMap: Record<string, { id: string; status: string }> = {}
   sessions?.forEach((s) => { sessionMap[s.mission_id] = { id: s.id, status: s.status } })
-
-  const jenjangLabels: Record<string, string> = { SD: 'Tingkat Dasar', SMP: 'Tingkat Menengah', SMA: 'Tingkat Lanjut' }
-  const jenjangDisplay: Record<string, string> = { SD: 'Semester 1-2', SMP: 'Semester 3-4', SMA: 'Semester 5-6' }
-  const jenjangColors: Record<string, string> = {
-    SD: 'bg-green-50 text-green-700 border-green-200',
-    SMP: 'bg-blue-50 text-blue-700 border-blue-200',
-    SMA: 'bg-purple-50 text-purple-700 border-purple-200',
-  }
 
   return (
     <div className="min-h-screen bg-slate-50">
@@ -118,8 +110,8 @@ export default async function WorkspacePage() {
                   className="bg-white rounded-2xl border border-slate-200 p-6 flex flex-col hover:border-indigo-300 hover:shadow-md transition-all shadow-sm"
                 >
                   <div className="flex items-start justify-between mb-4">
-                    <span className={`text-xs font-semibold px-2.5 py-1 rounded-full border ${jenjangColors[mission.jenjang] || 'bg-slate-100 text-slate-700 border-slate-200'}`}>
-                      {jenjangDisplay[mission.jenjang] || mission.jenjang}
+                    <span className="text-xs font-bold text-indigo-700 bg-indigo-100 border border-indigo-200 px-2.5 py-1 rounded-full uppercase tracking-wide">
+                      Tingkat {mission.difficulty || 'Sedang'}
                     </span>
                     {isCompleted && (
                       <span className="text-xs font-bold text-emerald-600 flex items-center gap-1 bg-emerald-50 px-2 py-1 rounded-full border border-emerald-100">

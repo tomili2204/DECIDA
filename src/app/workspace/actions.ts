@@ -1,30 +1,41 @@
 'use server'
 
 import { createClient } from '@/lib/supabase/server'
+import { createClient as createAdminSupabase } from '@supabase/supabase-js'
 import { redirect } from 'next/navigation'
 import { revalidatePath } from 'next/cache'
 import type { EvidenceLink } from '@/types/workspace'
 
+function getAdmin() {
+  return createAdminSupabase(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.SUPABASE_SERVICE_ROLE_KEY!,
+    { auth: { autoRefreshToken: false, persistSession: false } }
+  )
+}
+
 export async function startMission(missionId: string) {
   const supabase = await createClient()
+  const admin = getAdmin()
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) redirect('/login')
 
   // Check for existing active session
-  const { data: existing } = await supabase
+  const { data: existing } = await admin
     .from('sessions')
     .select('id')
     .eq('student_id', user.id)
     .eq('mission_id', missionId)
     .eq('status', 'active')
-    .single()
+    .limit(1)
+    .maybeSingle()
 
   if (existing) {
     redirect(`/workspace/${existing.id}`)
   }
 
   // Create new session
-  const { data: session, error } = await supabase
+  const { data: session, error } = await admin
     .from('sessions')
     .insert({ student_id: user.id, mission_id: missionId, status: 'active' })
     .select('id')

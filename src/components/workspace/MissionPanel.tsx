@@ -8,18 +8,6 @@ interface Props {
   liveStats?: Record<string, { count: number; hasNull: boolean }>
 }
 
-const JENJANG_BADGE: Record<string, string> = {
-  SD: 'bg-green-100 text-green-700',
-  SMP: 'bg-blue-100 text-blue-700',
-  SMA: 'bg-purple-100 text-purple-700',
-}
-
-const JENJANG_DISPLAY: Record<string, string> = {
-  SD: 'Semester 1-2',
-  SMP: 'Semester 3-4',
-  SMA: 'Semester 5-6',
-}
-
 const JENJANG_HINTS: Record<string, string[]> = {
   SD: ['SUM – Jumlah total', 'MAX – Nilai terbesar', 'MIN – Nilai terkecil', 'COUNT – Jumlah data'],
   SMP: ['AVERAGE – Rata-rata', 'MEDIAN – Nilai tengah', 'MODE – Nilai terbanyak', 'MIN / MAX', 'STDEV – Sebaran data'],
@@ -48,9 +36,6 @@ export default function MissionPanel({ mission, liveStats }: Props) {
       <div className="p-4 bg-indigo-700 text-white flex-shrink-0">
         <div className="flex items-center gap-2 mb-2">
           <span className="text-xs font-bold uppercase tracking-widest text-indigo-200">Misi</span>
-          <span className={`text-xs font-semibold px-2 py-0.5 rounded-full ${JENJANG_BADGE[mission.jenjang]} ml-auto`}>
-            {JENJANG_DISPLAY[mission.jenjang] || mission.jenjang}
-          </span>
         </div>
         <h1 className="font-bold text-lg leading-snug">{mission.title}</h1>
       </div>

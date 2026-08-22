@@ -1,22 +1,32 @@
 import { createClient } from '@/lib/supabase/server'
+import { createClient as createAdminSupabase } from '@supabase/supabase-js'
 import { notFound, redirect } from 'next/navigation'
 import WorkspaceClient from '@/components/workspace/WorkspaceClient'
 import type { Mission, StepAnswer } from '@/types/workspace'
 import { TelemetryProvider } from '@/lib/telemetry'
 
+function getAdmin() {
+  return createAdminSupabase(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.SUPABASE_SERVICE_ROLE_KEY!,
+    { auth: { autoRefreshToken: false, persistSession: false } }
+  )
+}
+
 interface Props {
   params: Promise<{ sessionId: string }>
 }
 
-export default async function WorkspaceSessionPage({ params }: Props) {
+export default async function Page({ params }: Props) {
   const { sessionId } = await params
   const supabase = await createClient()
+  const admin = getAdmin()
 
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) redirect('/login')
 
   // Load session + mission
-  const { data: session, error } = await supabase
+  const { data: session, error } = await admin
     .from('sessions')
     .select('id, status, student_id, missions(id, title, jenjang, scenario, dataset, steps)')
     .eq('id', sessionId)
@@ -27,7 +37,7 @@ export default async function WorkspaceSessionPage({ params }: Props) {
   const mission = session.missions as any as Mission
 
   // Load existing step answers
-  const { data: savedAnswers } = await supabase
+  const { data: savedAnswers } = await admin
     .from('step_answers')
     .select('step_number, answer_text, evidence_links')
     .eq('session_id', sessionId)
@@ -40,7 +50,7 @@ export default async function WorkspaceSessionPage({ params }: Props) {
   }))
 
   // Load profile
-  const { data: profile } = await supabase
+  const { data: profile } = await admin
     .from('profiles')
     .select('full_name')
     .eq('id', user.id)

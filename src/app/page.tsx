@@ -48,8 +48,8 @@ export default function LandingPage() {
                 <span className="flex h-2 w-2 rounded-full bg-teal-400"></span>
                 Platform asesmen berbasis learning analytics
               </div>
-              <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold tracking-tight mb-6 leading-tight">
-                Ukur Nalar Statistik dengan <span className="text-transparent bg-clip-text bg-gradient-to-r from-teal-400 to-indigo-400">Explainable AI</span>
+              <h1 className="text-3xl md:text-4xl lg:text-5xl font-extrabold tracking-tight mb-6 leading-tight">
+                Asesmen berpikir kritis dalam pengambilan keputusan statistik berbantuan <span className="text-transparent bg-clip-text bg-gradient-to-r from-teal-400 to-indigo-400">AI</span>
               </h1>
               <p className="text-lg md:text-xl text-slate-300 mb-8 max-w-2xl mx-auto lg:mx-0 leading-relaxed">
                 DECIDA adalah <i>Cognitive Spreadsheet</i> inovatif yang melacak proses pengambilan keputusan mahasiswa dan memberikan analisis kualitatif instan untuk dosen.

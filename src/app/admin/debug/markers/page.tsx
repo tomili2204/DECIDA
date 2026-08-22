@@ -1,25 +1,35 @@
 import { createClient } from '@/lib/supabase/server'
+import { createClient as createAdminSupabase } from '@supabase/supabase-js'
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
 
+function getAdmin() {
+  return createAdminSupabase(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.SUPABASE_SERVICE_ROLE_KEY!,
+    { auth: { autoRefreshToken: false, persistSession: false } }
+  )
+}
+
 export default async function DebugMarkersIndex() {
   const supabase = await createClient()
+  const admin = getAdmin()
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) redirect('/login')
 
-  const { data: profile } = await supabase.from('profiles').select('role').eq('id', user.id).single()
+  const { data: profile } = await admin.from('profiles').select('role').eq('id', user.id).single()
   if (!profile || (profile.role !== 'admin' && profile.role !== 'teacher')) {
     redirect('/')
   }
 
   // Fetch sessions that have markers computed
-  const { data: sessions } = await supabase
+  const { data: sessions } = await admin
     .from('markers')
     .select(`
       session_id,
       sessions:session_id (
         created_at,
-        profiles:student_id (full_name, jenjang),
+        profiles:student_id (full_name),
         missions:mission_id (title)
       )
     `)
@@ -27,12 +37,12 @@ export default async function DebugMarkersIndex() {
     .limit(20)
 
   // Fetch sessions without markers (completed but no markers, maybe pipeline failed or not triggered)
-  const { data: completedWithoutMarkers } = await supabase
+  const { data: completedWithoutMarkers } = await admin
     .from('sessions')
     .select(`
       id,
       created_at,
-      profiles:student_id (full_name, jenjang),
+      profiles:student_id (full_name),
       missions:mission_id (title)
     `)
     .eq('status', 'completed')
@@ -51,7 +61,7 @@ export default async function DebugMarkersIndex() {
           <table className="w-full text-left text-sm text-slate-600">
             <thead className="bg-slate-100 text-slate-700 uppercase font-semibold">
               <tr>
-                <th className="px-6 py-4">Mahasiswa (Jenjang)</th>
+                <th className="px-6 py-4">Mahasiswa</th>
                 <th className="px-6 py-4">Misi</th>
                 <th className="px-6 py-4">Aksi</th>
               </tr>
@@ -63,7 +73,7 @@ export default async function DebugMarkersIndex() {
                 return (
                   <tr key={row.session_id} className="hover:bg-slate-50 transition-colors">
                     <td className="px-6 py-4 font-medium text-slate-900">
-                      {(s.profiles as any)?.full_name} <span className="text-xs text-slate-400 font-normal">({(s.profiles as any)?.jenjang})</span>
+                      {(s.profiles as any)?.full_name}
                     </td>
                     <td className="px-6 py-4">{(s.missions as any)?.title}</td>
                     <td className="px-6 py-4">
@@ -92,7 +102,7 @@ export default async function DebugMarkersIndex() {
               <table className="w-full text-left text-sm text-slate-600">
                 <thead className="bg-red-50 text-red-700 uppercase font-semibold">
                   <tr>
-                    <th className="px-6 py-4">Mahasiswa (Jenjang)</th>
+                    <th className="px-6 py-4">Mahasiswa</th>
                     <th className="px-6 py-4">Misi</th>
                     <th className="px-6 py-4">Aksi</th>
                   </tr>
@@ -100,7 +110,7 @@ export default async function DebugMarkersIndex() {
                 <tbody className="divide-y divide-slate-200">
                   {completedWithoutMarkers.map((s: any) => (
                     <tr key={s.id} className="hover:bg-red-50 transition-colors">
-                      <td className="px-6 py-4 font-medium text-slate-900">{(s.profiles as any)?.full_name} ({(s.profiles as any)?.jenjang})</td>
+                      <td className="px-6 py-4 font-medium text-slate-900">{(s.profiles as any)?.full_name}</td>
                       <td className="px-6 py-4">{(s.missions as any)?.title}</td>
                       <td className="px-6 py-4">
                         <Link href={`/admin/debug/markers/${s.id}`} className="text-red-600 hover:text-red-900 font-medium hover:underline">

@@ -1,20 +1,30 @@
 import { createClient } from '@/lib/supabase/server'
+import { createClient as createAdminSupabase } from '@supabase/supabase-js'
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
 
+function getAdmin() {
+  return createAdminSupabase(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.SUPABASE_SERVICE_ROLE_KEY!,
+    { auth: { autoRefreshToken: false, persistSession: false } }
+  )
+}
+
 export default async function DebugTraceIndex() {
   const supabase = await createClient()
+  const admin = getAdmin()
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) redirect('/login')
 
   // Check if admin/researcher
-  const { data: profile } = await supabase.from('profiles').select('role').eq('id', user.id).single()
+  const { data: profile } = await admin.from('profiles').select('role').eq('id', user.id).single()
   if (!profile || (profile.role !== 'admin' && profile.role !== 'teacher')) {
     redirect('/')
   }
 
   // Fetch recent sessions that have logs
-  const { data: sessions } = await supabase
+  const { data: sessions } = await admin
     .from('sessions')
     .select(`
       id, 

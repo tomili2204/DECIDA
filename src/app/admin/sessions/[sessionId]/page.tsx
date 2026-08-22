@@ -1,4 +1,5 @@
 import { createClient } from '@/lib/supabase/server'
+import { createClient as createAdminSupabase } from '@supabase/supabase-js'
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import RadarChartClient from './RadarChartClient'
@@ -15,14 +16,23 @@ function levelToScore(level: string) {
   }
 }
 
+function getAdmin() {
+  return createAdminSupabase(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.SUPABASE_SERVICE_ROLE_KEY!,
+    { auth: { autoRefreshToken: false, persistSession: false } }
+  )
+}
+
 export default async function TeacherDashboardPage({ params }: { params: Promise<{ sessionId: string }> }) {
   const { sessionId } = await params
   const supabase = await createClient()
+  const admin = getAdmin()
 
   // Ambil Session
-  const { data: session, error } = await supabase
+  const { data: session, error } = await admin
     .from('sessions')
-    .select('id, status, created_at, profiles:student_id(full_name, jenjang), missions:mission_id(title)')
+    .select('id, status, created_at, profiles:student_id(full_name), missions:mission_id(title)')
     .eq('id', sessionId)
     .single()
 
@@ -72,7 +82,7 @@ export default async function TeacherDashboardPage({ params }: { params: Promise
               ← Kembali ke Daftar Sesi
             </Link>
             <h1 className="text-3xl font-bold text-slate-900">Dasbor Analitik: {(session.profiles as any)?.full_name}</h1>
-            <p className="text-slate-500 mt-1">Misi: {(session.missions as any)?.title} • Jenjang: {(session.profiles as any)?.jenjang} • {new Date(session.created_at).toLocaleString('id-ID')}</p>
+            <p className="text-slate-500 mt-1">Misi: {(session.missions as any)?.title} • {new Date(session.created_at).toLocaleString('id-ID')}</p>
           </div>
           <Link href="/admin/export" className="bg-white border border-slate-300 text-slate-700 px-4 py-2 rounded-lg font-medium hover:bg-slate-50 shadow-sm">
             Unduh Dataset

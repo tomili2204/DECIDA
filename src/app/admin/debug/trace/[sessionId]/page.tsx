@@ -1,6 +1,15 @@
 import { createClient } from '@/lib/supabase/server'
+import { createClient as createAdminSupabase } from '@supabase/supabase-js'
 import { notFound, redirect } from 'next/navigation'
 import Link from 'next/link'
+
+function getAdmin() {
+  return createAdminSupabase(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.SUPABASE_SERVICE_ROLE_KEY!,
+    { auth: { autoRefreshToken: false, persistSession: false } }
+  )
+}
 
 interface Props {
   params: Promise<{ sessionId: string }>
@@ -9,17 +18,18 @@ interface Props {
 export default async function DebugTraceDetail({ params }: Props) {
   const { sessionId } = await params
   const supabase = await createClient()
+  const admin = getAdmin()
 
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) redirect('/login')
 
-  const { data: profile } = await supabase.from('profiles').select('role').eq('id', user.id).single()
+  const { data: profile } = await admin.from('profiles').select('role').eq('id', user.id).single()
   if (!profile || (profile.role !== 'admin' && profile.role !== 'teacher')) {
     redirect('/')
   }
 
   // Fetch session details
-  const { data: session } = await supabase
+  const { data: session } = await admin
     .from('sessions')
     .select('id, status, profiles:student_id(full_name), missions:mission_id(title)')
     .eq('id', sessionId)
@@ -28,7 +38,7 @@ export default async function DebugTraceDetail({ params }: Props) {
   if (!session) notFound()
 
   // Fetch activity logs
-  const { data: logs } = await supabase
+  const { data: logs } = await admin
     .from('activity_logs')
     .select('*')
     .eq('session_id', sessionId)
