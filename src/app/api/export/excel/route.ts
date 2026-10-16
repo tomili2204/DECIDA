@@ -42,7 +42,7 @@ export async function GET(req: NextRequest) {
     const excelBuffer = await generateStudentAssessmentExcel(classId)
     const fileName = classId ? `Laporan-Asesmen-Kelas-${classId.slice(0, 8)}.xlsx` : `Laporan-Asesmen-Semua-Kelas.xlsx`
 
-    return new NextResponse(excelBuffer, {
+    return new NextResponse(new Uint8Array(excelBuffer), {
       status: 200,
       headers: {
         'Content-Type': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',

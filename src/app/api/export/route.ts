@@ -138,7 +138,7 @@ export async function GET(request: Request) {
       worksheet.addRow(['Pesan'])
       worksheet.addRow(['Belum ada data di tabel ini'])
       const buffer = await workbook.xlsx.writeBuffer()
-      return new NextResponse(Buffer.from(buffer), {
+      return new NextResponse(new Uint8Array(buffer), {
         headers: {
           'Content-Type': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
           'Content-Disposition': `attachment; filename="decida_${type}_empty.xlsx"`
@@ -213,7 +213,7 @@ export async function GET(request: Request) {
     })
 
     const buffer = await workbook.xlsx.writeBuffer()
-    return new NextResponse(Buffer.from(buffer), {
+    return new NextResponse(new Uint8Array(buffer), {
       headers: {
         'Content-Type': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
         'Content-Disposition': `attachment; filename="decida_${type}_export.xlsx"`
