@@ -4,13 +4,11 @@ import { useState } from 'react'
 
 export default function TeacherLogin() {
   const [error, setError] = useState('')
-  const [debug, setDebug] = useState('')
   const [loading, setLoading] = useState(false)
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
     setError('')
-    setDebug('')
     setLoading(true)
 
     const form = new FormData(e.currentTarget)
@@ -24,29 +22,17 @@ export default function TeacherLogin() {
         body: JSON.stringify({ email, password, expectedRole: 'teacher' }),
       })
 
-      const text = await res.text()
-      let data: any = {}
-      try { data = JSON.parse(text) } catch { data = { raw: text } }
-
-      let debugMsg = `Status: ${res.status}\n`
-      if (data.logs) {
-        debugMsg += `Logs:\n- ${data.logs.join('\n- ')}\n\n`
-      }
-      debugMsg += `Response: ${JSON.stringify(data, null, 2)}`
-      setDebug(debugMsg)
+      const data = await res.json()
 
       if (!res.ok) {
-        setError(data.error || `HTTP ${res.status}`)
+        setError(data.error || 'Email atau kata sandi tidak sesuai.')
         setLoading(false)
         return
       }
 
-      setDebug(prev => prev + `\n\n✅ Login berhasil! Redirect ke: ${data.redirectTo}`)
-      setTimeout(() => {
-        window.location.href = data.redirectTo || '/teacher/dashboard'
-      }, 1500)
+      window.location.href = data.redirectTo || '/teacher/dashboard'
     } catch (err: any) {
-      setError(`Network error: ${err.message}`)
+      setError(`Gagal terhubung ke server: ${err.message}`)
       setLoading(false)
     }
   }
@@ -75,12 +61,6 @@ export default function TeacherLogin() {
               <div className="bg-red-50 border border-red-200 p-4 rounded-xl">
                 <p className="text-sm font-bold text-red-800">ERROR:</p>
                 <p className="text-sm text-red-700">{error}</p>
-              </div>
-            )}
-            {debug && (
-              <div className="bg-slate-900 p-4 rounded-xl max-h-48 overflow-y-auto shadow-inner">
-                <p className="text-xs font-bold text-teal-400 mb-2">SISTEM LOG:</p>
-                <pre className="text-xs text-slate-300 font-mono whitespace-pre-wrap">{debug}</pre>
               </div>
             )}
             
