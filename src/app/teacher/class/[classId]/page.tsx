@@ -83,7 +83,7 @@ export default async function ClassDetailPage(props: {
       .in('student_id', studentIds)
       .order('created_at', { ascending: false })
 
-    if (latestSessions) {
+    if (latestSessions && Array.isArray(latestSessions)) {
       latestSessions.forEach((s: any) => {
         const reportData = Array.isArray(s.ai_reports) ? s.ai_reports[0]?.report_data : s.ai_reports?.report_data
         if (!aiReportsMap[s.student_id]) {
@@ -104,11 +104,22 @@ export default async function ClassDetailPage(props: {
           <Link href="/teacher/dashboard" className="w-10 h-10 flex items-center justify-center rounded-full bg-slate-100 hover:bg-slate-200 text-slate-600 transition-colors">
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" /></svg>
           </Link>
-          <div>
-            <h1 className="text-xl font-bold text-slate-900">{classData.name}</h1>
-            <p className="text-sm text-slate-500">
-              Kode Kelas: <span className="font-mono bg-slate-100 px-1.5 py-0.5 rounded text-slate-700">{classData.code}</span>
-            </p>
+          <div className="flex-1 flex justify-between items-center">
+            <div>
+              <h1 className="text-xl font-bold text-slate-900">{classData.name}</h1>
+              <p className="text-sm text-slate-500">
+                Kode Kelas: <span className="font-mono bg-slate-100 px-1.5 py-0.5 rounded text-slate-700">{classData.code}</span>
+              </p>
+            </div>
+            <a
+              href={`/api/export/excel?classId=${params.classId}`}
+              className="inline-flex items-center gap-2 px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-semibold rounded-xl shadow-sm transition-colors"
+            >
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+              </svg>
+              Download Laporan Excel (.xlsx)
+            </a>
           </div>
         </div>
       </header>
@@ -166,9 +177,9 @@ export default async function ClassDetailPage(props: {
                       const aiReport = sessionData?.reportData
                       
                       const renderBadge = (indicatorName: string) => {
-                        if (!aiReport || !aiReport.profil_per_indikator) return <span className="text-slate-300">-</span>
-                        const ind = aiReport.profil_per_indikator.find((x: any) => x.indikator.toLowerCase() === indicatorName.toLowerCase())
-                        if (!ind) return <span className="text-slate-300">-</span>
+                        if (!aiReport || !Array.isArray(aiReport.profil_per_indikator)) return <span className="text-slate-300">-</span>
+                        const ind = aiReport.profil_per_indikator.find((x: any) => x && x.indikator && typeof x.indikator === 'string' && x.indikator.toLowerCase() === indicatorName.toLowerCase())
+                        if (!ind || !ind.level || typeof ind.level !== 'string') return <span className="text-slate-300">-</span>
                         
                         const levelStr = ind.level.toLowerCase().trim()
                         
@@ -194,7 +205,7 @@ export default async function ClassDetailPage(props: {
                             </Link>
                           </td>
                           <td className="py-4 px-4 whitespace-nowrap">
-                            <RemoveStudentButton classId={params.classId} studentId={m.student_id} studentName={(m.profiles as any)?.full_name} />
+                            <RemoveStudentButton classId={params.classId} studentId={m.student_id} studentName={(m.profiles as any)?.full_name || 'Mahasiswa'} />
                           </td>
                           <td className="py-4 px-4 max-w-[200px]">
                             {sessionData?.missionTitle ? (

@@ -42,6 +42,27 @@ export default async function ExportPage() {
           <p className="text-slate-600 mb-8">Tarik data dari database Supabase dalam format CSV untuk dianalisis lebih lanjut menggunakan SPSS, R, atau Python.</p>
         </div>
 
+        <div className="bg-gradient-to-r from-emerald-600 to-teal-700 text-white p-6 rounded-2xl shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div>
+            <span className="inline-block px-2.5 py-0.5 rounded-full text-xs font-bold bg-emerald-500/30 text-emerald-100 border border-emerald-400/30 mb-2">
+              FORMAT RESMI LAPORAN
+            </span>
+            <h2 className="text-xl font-bold">Rekap Laporan Asesmen Mahasiswa (.xlsx)</h2>
+            <p className="text-emerald-100 text-sm mt-1 max-w-xl">
+              File Excel rapi berisi Nama Peserta, Kelas, Jawaban Soal 1-6, Skor kognitif per nomor soal, Skor rata-rata, dan Grade peserta (Tinggi/Sedang/Rendah).
+            </p>
+          </div>
+          <a
+            href="/api/export/excel"
+            className="inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-white text-emerald-800 hover:bg-emerald-50 rounded-xl font-bold text-sm shadow transition-all flex-shrink-0"
+          >
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+            </svg>
+            Download Excel (.xlsx)
+          </a>
+        </div>
+
         <div className="grid gap-6">
           {exportTypes.map(type => (
             <div key={type.id} className="bg-white p-6 rounded-xl shadow-sm border border-slate-200 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
@@ -51,16 +72,26 @@ export default async function ExportPage() {
               </div>
               <div className="flex gap-2 flex-shrink-0">
                 <a 
+                  href={`/api/export?type=${type.id}&format=xlsx`}
+                  download
+                  className="bg-emerald-50 text-emerald-700 hover:bg-emerald-100 border border-emerald-300 px-3.5 py-2 rounded-lg font-bold text-sm transition-colors text-center inline-flex items-center gap-1.5 shadow-sm"
+                  title="Unduh format Excel (.xlsx)"
+                >
+                  📊 XLSX
+                </a>
+                <a 
                   href={`/api/export?type=${type.id}&format=csv`}
                   download
-                  className="bg-indigo-50 text-indigo-700 hover:bg-indigo-100 border border-indigo-200 px-4 py-2 rounded-lg font-medium text-sm transition-colors text-center"
+                  className="bg-indigo-50 text-indigo-700 hover:bg-indigo-100 border border-indigo-200 px-3.5 py-2 rounded-lg font-medium text-sm transition-colors text-center inline-flex items-center gap-1"
+                  title="Unduh format CSV"
                 >
                   📥 CSV
                 </a>
                 <a 
                   href={`/api/export?type=${type.id}&format=json`}
                   download
-                  className="bg-slate-50 text-slate-700 hover:bg-slate-100 border border-slate-200 px-4 py-2 rounded-lg font-medium text-sm transition-colors text-center"
+                  className="bg-slate-50 text-slate-700 hover:bg-slate-100 border border-slate-200 px-3 py-2 rounded-lg font-medium text-sm transition-colors text-center"
+                  title="Unduh format JSON"
                 >
                   {'{ }'} JSON
                 </a>
